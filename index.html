@@ -1,0 +1,424 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A message for you</title>
+  <link rel="preload" href="assets/fonts/VALVEPulp-Bold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css?v=25">
+</head>
+<body>
+  <!-- The city: collage, tint, searchlight beams, skyline, film grain -->
+  <div class="city" aria-hidden="true">
+    <div class="city__photo"></div>
+    <div class="city__collage"></div>
+    <div class="city__tint"></div>
+    <div class="city__beam city__beam--1"></div>
+    <div class="city__beam city__beam--2"></div>
+    <div class="city__beam city__beam--3"></div>
+    <div class="city__skyline"></div>
+    <div class="city__grain"></div>
+    <div class="city__vignette"></div>
+  </div>
+
+  <!-- Fixed places (the party's theater hall, the end's neon street) shown instead of the city when the story gets there -->
+  <div class="place-bg" aria-hidden="true"></div>
+
+  <!-- Scene 0: one click to let the browser play sound, so the music is on from the first word -->
+  <section class="scene scene--gate is-active" id="gate" role="button" tabindex="0" aria-label="Click to enter the city">
+    <p class="gate__line">🎧 Turn your sound on for the best experience.</p>
+    <p class="gate__cta" id="gateCta">Click to enter the city</p>
+    <!-- shown instead when a story is already in progress (saved in this browser) -->
+    <div class="gate__resume" id="gateResume" hidden>
+      <button class="plate plate--small" type="button" data-resume="yes"><span class="plate__text">Continue the story</span></button>
+      <button class="plate plate--ghost plate--small" type="button" data-resume="no"><span class="plate__text">Start over</span></button>
+    </div>
+  </section>
+
+  <!-- Scene 1: the button -->
+  <main class="scene scene--intro" id="intro">
+    <h1 class="intro__title" data-type>Hey,</h1>
+    <p class="intro__line" data-type>Someone in the city left you a message.</p>
+    <div class="intro__cta" id="cta">
+      <button class="plate plate--postcard" id="start" type="button" aria-label="Wander the Cursed Apple">
+        <span class="postcard postcard--small" data-text="Wander the"><span class="postcard__fill">Wander the</span></span>
+        <span class="postcard" data-text="Cursed Apple"><span class="postcard__fill">Cursed Apple</span></span>
+      </button>
+    </div>
+  </main>
+
+  <!-- Scene 2: a guest (filled from CAST in script.js) -->
+  <section class="scene scene--guest" id="guest" aria-live="polite">
+    <div class="stage">
+      <div class="float">
+        <button class="card" id="card" type="button" aria-label="">
+          <span class="card__tag" id="cardTag"></span>
+          <span class="card__frame">
+            <span class="card__pic">
+              <img class="card__img" id="cardImg" alt="">
+              <!-- asleep: the portrait with its eyes painted shut, plus glowing lid lines
+                   drawn in the portrait's own pixel coordinates -->
+              <span class="card__sleep" aria-hidden="true">
+                <img class="card__img" id="cardSleepImg" alt="">
+                <svg viewBox="0 0 280 380" preserveAspectRatio="none">
+                  <defs>
+                    <filter id="lidGlow" x="-50%" y="-50%" width="200%" height="200%">
+                      <feGaussianBlur stdDeviation="2.2" result="b"/>
+                      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                  </defs>
+                  <g fill="none" stroke="#cfe6ff" stroke-linecap="round" filter="url(#lidGlow)">
+                    <path d="M116 215 Q137 233 158 213" stroke-width="4.5"/>
+                    <path d="M211 224 Q221 237 232 222" stroke-width="3.8"/>
+                  </g>
+                </svg>
+              </span>
+            </span>
+          </span>
+          <span class="zzz" aria-hidden="true"><span>z</span><span>z</span><span>Z</span></span>
+        </button>
+      </div>
+
+      <!-- the conversation stacks up here like a chat (filled from the guest's scene in script.js) -->
+      <div class="chat" id="chat" aria-live="polite"></div>
+    </div>
+    <p class="nudge" id="nudge" hidden></p>
+  </section>
+
+  <!-- The city map: pick a "?" card in Downtown or Uptown; the Baroness waits, locked, in Midtown -->
+  <section class="scene scene--map" id="map">
+    <header class="map__head">
+      <p class="map__kicker">The Cursed Apple</p>
+      <h2 class="map__title">Where to next?</h2>
+    </header>
+    <div class="map__city">
+      <div class="district" data-district="downtown">
+        <h3 class="district__name">Downtown</h3>
+        <div class="district__cards"></div>
+      </div>
+
+      <button class="baroness" id="baroness" type="button" aria-label="Midtown">
+        <h3 class="district__name">Midtown</h3>
+        <svg class="baroness__tower" viewBox="0 0 220 340" aria-hidden="true">
+          <defs>
+            <linearGradient id="bGold" x1="0" x2="1">
+              <stop offset="0" stop-color="#7a5410"/><stop offset=".45" stop-color="#f7e3a3"/><stop offset=".6" stop-color="#d9a428"/><stop offset="1" stop-color="#5a3c0a"/>
+            </linearGradient>
+          </defs>
+          <!-- stepped art deco tower: spire, three crown steps, body, wide base -->
+          <path class="b-body" d="M106 40 L110 4 L114 40 H124 V70 H136 V100 H150 V130 H168 V300 H180 V336 H40 V300 H52 V130 H70 V100 H84 V70 H96 V40 Z"/>
+          <g class="b-lines">
+            <path d="M110 130 L76 102 M110 130 L92 101 M110 130 V101 M110 130 L128 101 M110 130 L144 102"/>
+            <path d="M52 300 H168 M70 130 H150 M84 100 H136 M96 70 H124"/>
+          </g>
+          <g id="bWins"></g>
+          <path class="b-door" d="M98 336 V316 Q110 300 122 316 V336 Z"/>
+          <text class="b-ask" x="110" y="262" text-anchor="middle">?</text>
+        </svg>
+        <span class="baroness__ash" id="bAsh" aria-hidden="true"></span>
+        <span class="baroness__name" id="baronessName"></span>
+        <span class="baroness__note" id="baronessNote">Locked</span>
+      </button>
+
+      <div class="district" data-district="uptown">
+        <h3 class="district__name">Uptown</h3>
+        <div class="district__cards"></div>
+      </div>
+    </div>
+    <!-- the Broker's shop: only here for a limited time -->
+    <button class="broker-sign" id="brokerSign" type="button" hidden>
+      <img src="assets/img/broker-head.png" alt="">
+      <span><b>The Broker</b>Open for a limited time…</span>
+    </button>
+    <p class="nudge" id="mapNudge" hidden></p>
+  </section>
+
+  <!-- Inside the Doorman's ultimate (Hotel Guest): a long, empty hotel hallway, an elevator glowing far at the end -->
+  <div class="ult-bg" aria-hidden="true">
+    <div class="ult__rays"></div>
+    <div class="ult__debris" id="ultDebris"></div>
+    <div class="hall-wrap"><div class="hall">
+      <div class="hall__wall hall__wall--l"></div>
+      <div class="hall__wall hall__wall--r"></div>
+      <div class="hall__floor"></div>
+      <div class="hall__ceiling"></div>
+      <div class="hall__end">
+        <div class="lift">
+          <span class="lift__arrow">▼</span>
+          <div class="lift__doors"><span></span><span></span></div>
+        </div>
+      </div>
+    </div></div>
+    <div class="hall__haze"></div>
+  </div>
+
+  <!-- The Baroness lobby: every guest at the party as a card; pick one to talk to -->
+  <section class="scene scene--lobby" id="lobby">
+    <header class="map__head">
+      <p class="map__kicker">The Baroness</p>
+      <h2 class="map__title">Who do you want to talk to?</h2>
+    </header>
+    <div class="lobby__hall">
+      <div class="lobby__group">
+        <h3 class="district__name">Your new friends</h3>
+        <div class="lobby__cards lobby__cards--left" id="lobbyLeft"></div>
+      </div>
+      <button class="plate plate--postcard the-end" id="theEnd" type="button" aria-label="The End">
+        <span class="the-end__ash" id="endAsh" aria-hidden="true"></span>
+        <span class="postcard" data-text="The End"><span class="postcard__fill">The End</span></span>
+      </button>
+      <div class="lobby__group">
+        <h3 class="district__name">Already at the party</h3>
+        <div class="lobby__cards lobby__cards--right" id="lobbyRight"></div>
+      </div>
+    </div>
+    <p class="nudge" id="lobbyNudge" hidden></p>
+  </section>
+
+  <!-- The very end: over the city, "Happy birthday, Alex" in the start screen's lettering, then Ibra's message writes itself out like the walks -->
+  <section class="scene scene--end" id="end">
+    <h1 class="end__title" aria-label="Happy birthday, Alex">
+      <span class="postcard postcard--small" data-text="Happy birthday,"><span class="postcard__fill">Happy birthday,</span></span>
+      <span class="postcard" data-text="Alex"><span class="postcard__fill">Alex</span></span>
+    </h1>
+    <div class="wander__text end__letter" id="endLetter"></div>
+    <p class="end__next" id="endNext" hidden>Click when you're ready</p>
+  </section>
+
+  <!-- The credits: they roll up like at the end of a film, over the City Never Sleeps poster -->
+  <div class="credits" id="credits" hidden>
+    <div class="credits__bg" aria-hidden="true"></div>
+    <div class="credits__roll" id="creditsRoll">
+      <img class="credits__title" src="assets/img/title_final.webp" alt="City Never Sleeps">
+      <p class="credits__lead">A birthday story for Alex</p>
+
+      <h3>Starring</h3>
+      <p><b>Alex</b> as Himself</p>
+      <p><b>Rem</b> as New York's Little Helper</p>
+      <p><b>Phoebe</b> as Herself (the paper eater)</p>
+
+      <h3>The Cursed Apple</h3>
+      <p><b>Vyper</b> as Girl Failure</p>
+      <p><b>Viscous</b> as the Friendliest Goo in Town</p>
+      <p><b>Drifter</b> as Whistling Sounds</p>
+      <p><b>Graves</b> as the Angsty Teenager</p>
+      <p><b>Mo &amp; Krill</b> as Two Friends, One Tunnel</p>
+      <p><b>Billy</b> as the Rock 'n' Roll Menace</p>
+      <p><b>Lash</b> as Himself (he insisted)</p>
+
+      <h3>At The Baroness</h3>
+      <p><b>The Doorman</b> as the Mysterious Man</p>
+      <p><b>Rat King</b> as the Long Island Conqueror</p>
+      <p><b>Rabies Ronnie</b> as Himself</p>
+      <p><b>Violet</b> as Insecurity Incarnate</p>
+      <p><b>Nurse Harrow</b> as Doctor's Orders</p>
+      <p><b>Deadman Danny</b> as Business Cards Available</p>
+
+      <h3>Special appearance</h3>
+      <p><b>The Broker</b>, for a limited time</p>
+
+      <h3>Music</h3>
+      <p>Deadlock Main Theme · Rem's Hideout · Teleporter</p>
+      <p>The Curiosity Shop · The Baroness Hotel</p>
+
+      <h3>Characters, voices &amp; the city</h3>
+      <p>Deadlock, by Valve</p>
+
+      <p class="credits__joke">No cats were harmed in the making of this birthday.<br>Several tickets were.</p>
+
+      <h3>Made with love by</h3>
+      <p><b>Ibra</b>, Rem's Lil' Helper</p>
+
+      <div class="credits__last">
+        <span class="postcard postcard--small" data-text="Happy birthday,"><span class="postcard__fill">Happy birthday,</span></span>
+        <span class="postcard" data-text="Alex"><span class="postcard__fill">Alex</span></span>
+      </div>
+    </div>
+    <!-- once the roll stops: close the page, or start the whole story over -->
+    <div class="credits__btns" id="creditsBtns">
+      <button class="plate plate--red" type="button" id="theEndBtn"><span class="plate__text">The End</span></button>
+      <button class="plate plate--ghost plate--small" type="button" id="againBtn"><span class="plate__text">Play again</span></button>
+    </div>
+    <p class="credits__bye" id="creditsBye">Thank you for playing. You can close this tab now.</p>
+  </div>
+
+  <!-- Between the paper and a guest: the walk, written out like the opening message -->
+  <section class="scene scene--wander" id="wander">
+    <div class="wander__text" id="wanderText"></div>
+  </section>
+
+  <!-- Between scenes: a spinning front page (filled per guest from CAST) -->
+  <div class="paper" id="paper" hidden>
+    <article class="paper__sheet">
+      <header class="paper__mast">
+        <p class="paper__line"><span>Late city edition</span><span>Extra!</span><span>Five cents</span></p>
+        <h2 class="paper__name">The Cursed Apple Times</h2>
+      </header>
+      <h3 class="paper__headline" id="paperHeadline"></h3>
+      <div class="paper__body">
+        <figure class="paper__photo">
+          <img id="paperImg" alt="">
+          <figcaption id="paperCaption"></figcaption>
+        </figure>
+        <p class="paper__story" id="paperStory"></p>
+      </div>
+    </article>
+    <p class="paper__hint">Click to continue</p>
+  </div>
+
+  <!-- The torn ticket: the holder fills up along the bottom; a new piece flutters in big first -->
+  <div class="holder" id="holder" hidden><div class="holder__ghost"></div><p class="holder__label" id="holderLabel"></p></div>
+  <div class="gift" id="gift" hidden>
+    <p class="gift__title">You got a torn ticket piece</p>
+    <div class="gift__stage"><div class="gift__piece" id="giftPiece"></div></div>
+    <button class="plate plate--small gift__take" id="take" type="button"><span class="plate__text">Take it</span></button>
+  </div>
+
+  <!-- Minigame: Viscous hides the ticket under one of three goo cubes and shuffles them -->
+  <div class="cubes" id="cubes" hidden>
+    <p class="cubes__round" id="cubesRound"></p>
+    <div class="cubes__host" id="cubesHost">
+      <div class="face face--hero" style="background-image:url('assets/img/viscous-head.png')" role="img" aria-label="Viscous"></div>
+      <div class="say"><img class="say__name" src="assets/img/viscous-name.webp" alt="Viscous"><p id="cubesSay"></p></div>
+    </div>
+    <div class="cubes__table" id="cubesTable"></div>
+    <p class="cubes__hint" id="cubesHint"></p>
+  </div>
+
+  <!-- Minigame: Mo & Krill's tunnels; pick the right tunnel at each fork -->
+  <div class="cubes tunnels" id="tunnels" hidden>
+    <p class="cubes__round" id="tunnelsRound"></p>
+    <div class="cubes__host" id="tunnelsHost">
+      <div class="face face--hero" style="background-image:url('assets/img/mokrill-head.png')" role="img" aria-label="Mo and Krill"></div>
+      <div class="say"><img class="say__name" src="assets/img/mokrill-name.webp" alt="Mo and Krill"><p id="tunnelsSay"></p></div>
+    </div>
+    <div class="tunnels__row" id="tunnelsRow"></div>
+    <p class="cubes__hint" id="tunnelsHint"></p>
+  </div>
+
+  <!-- Minigame: the fight with Billy (Billy on the left, Alex and Rem on the right, a cracked VS in the middle) -->
+  <div class="cubes fight" id="fight" hidden>
+    <div class="fight__arena">
+      <div class="fighter" id="fightBilly">
+        <img class="fighter__face" id="fightBillyImg" src="assets/img/billy-head.png" alt="Billy">
+        <img class="say__name" src="assets/img/billy-name.webp" alt="Billy">
+        <div class="hp"><i id="hpBilly"></i></div>
+      </div>
+      <div class="fight__vs" aria-hidden="true">VS</div>
+      <div class="fighter" id="fightAlex">
+        <div class="fighter__pair"><span class="face face--alex"></span><span class="face face--hero" style="background-image:url('assets/img/rem-head.png')"></span></div>
+        <p class="fighter__name">Alex &amp; Rem</p>
+        <div class="hp"><i id="hpAlex"></i></div>
+      </div>
+    </div>
+    <p class="fight__log" id="fightLog"></p>
+    <div class="opts fight__moves" id="fightMoves"></div>
+    <!-- the real in-game Billy (cut out of the user's recording) plays here for Blasted and Bashdown -->
+    <video class="fight__clip" id="fightClip" muted playsinline preload="auto" aria-hidden="true"></video>
+    <div class="fight__blast" aria-hidden="true"></div>
+    <!-- an ability callout, like the ability cards on the Deadlock wiki: icon, name, what it does -->
+    <div class="ability" id="ability" aria-live="polite">
+      <img class="ability__icon" id="abilityIcon" alt="">
+      <div class="ability__text"><b id="abilityName"></b><span id="abilityDesc"></span></div>
+    </div>
+    <p class="fight__ko" aria-hidden="true">K.O.</p>
+  </div>
+
+  <!-- Minigame: Lash's trap for Billy -->
+  <div class="cubes trap" id="trap" hidden>
+    <div class="cubes__host" id="trapHost">
+      <div class="face face--hero" style="background-image:url('assets/img/lash-head.png')" role="img" aria-label="Lash"></div>
+      <div class="say"><img class="say__name" src="assets/img/lash-name.webp" alt="Lash"><p id="trapSay"></p></div>
+    </div>
+    <div class="trap__stage" id="trapStage"></div>
+  </div>
+
+  <!-- Drifter's ultimate: the lights die, everything goes black, and somewhere in the dark… whistling -->
+  <div class="blackout" id="blackout" hidden>
+    <p class="blackout__text" id="blackoutText"></p>
+    <div class="blackout__eyes" aria-hidden="true"><span></span><span></span></div>
+  </div>
+
+  <!-- Walking up to the Broker (like his page on the official site) -->
+  <div class="bk" id="brokerArrive" hidden>
+    <p class="bk__line" data-step>Psst…</p>
+    <p class="bk__line" data-step>in New York for a <span class="redtag">Limited time…</span></p>
+    <img class="bk__logo" data-step src="assets/img/broker/broker_logo.webp" alt="The Broker">
+    <p class="bk__line" data-step>…but there's</p>
+    <p class="bk__line" data-step><span class="redtag redtag--catch">always a catch</span></p>
+    <div class="bk__shop" data-step><img src="assets/img/broker/broker_shop.webp" alt=""><div class="bk__glow"></div></div>
+    <p class="bk__hint">Click to go in</p>
+  </div>
+
+  <!-- The Broker's cursed ticket: buy it or walk away -->
+  <div class="curse" id="curse" hidden>
+    <div class="item">
+      <div class="item__badge"><div class="item__ticket">✦</div></div>
+      <h2 class="item__name">Cursed Torn Ticket</h2>
+      <div class="item__row1"><span class="item__price">§ Costs: your paper</span><span class="item__corrupt">CORRUPTED</span></div>
+      <div class="stat stat--up"><b>+1</b>Huge clue about the mysterious man</div>
+      <div class="stat stat--up"><b>+100%</b>Chance of saying "oh!" out loud</div>
+      <div class="stat stat--down"><b>−1</b>Torn ticket piece, slightly chewed<small>PHOEBE!</small></div>
+      <div class="stat stat--down"><b>+100%</b>Phoebe eating paper</div>
+    </div>
+    <div class="curse__buttons">
+      <button class="plate plate--small" id="curseBuy" type="button"><span class="plate__text">Buy it</span></button>
+      <button class="plate plate--small plate--ghost" id="curseLeave" type="button"><span class="plate__text">Walk away</span></button>
+    </div>
+  </div>
+
+  <!-- Phoebe, Alex's cat: the Broker's curse -->
+  <img class="phoebe" id="phoebe" src="assets/img/phoebe.jpg" alt="Phoebe" hidden>
+
+  <!-- Who is the mysterious man? Alex types a name -->
+  <div class="guess" id="guess" hidden>
+    <p class="cubes__round">The mysterious man</p>
+    <ul class="guess__clues" id="guessClues"></ul>
+    <form class="guess__form" id="guessForm" autocomplete="off">
+      <input class="guess__input" id="guessInput" type="text" placeholder="Type his name…" aria-label="The mysterious man's name">
+      <button class="plate plate--small" type="submit"><span class="plate__text">Guess</span></button>
+    </form>
+    <div class="cubes__host guess__reply" id="guessHost">
+      <div class="face face--hero" id="guessFace" role="img"></div>
+      <div class="say"><img class="say__name" id="guessName" alt=""><p id="guessSay"></p></div>
+    </div>
+  </div>
+
+  <!-- The Doorman's ultimate, cast on Alex: he walks up, raises his hand, the gold key-halo and beams burst out,
+       Alex is locked in cyan light with a turning key, then everything warps away into his pocket hotel -->
+  <div class="cast" id="cast" hidden>
+    <div class="cast__beams"></div>
+    <div class="cast__man">
+      <div class="cast__halo"><span class="cast__ring"></span></div>
+      <img class="cast__art" src="assets/img/doorman-render.webp" alt="The Doorman">
+      <div class="cast__keys" id="castKeys"></div>
+    </div>
+    <div class="cast__sigil"></div>
+    <div class="cast__lock">
+      <svg viewBox="0 0 120 120" class="cast__keyhole" aria-hidden="true"><circle cx="60" cy="60" r="54" fill="none" stroke="#f7e3a3" stroke-width="5" stroke-dasharray="10 8"/><circle cx="60" cy="48" r="13" fill="#f7e3a3"/><path d="M52 56 L68 56 L72 88 L48 88 Z" fill="#f7e3a3"/></svg>
+      <svg viewBox="0 0 60 160" class="cast__key" aria-hidden="true"><circle cx="30" cy="30" r="24" fill="none" stroke="#f2c24a" stroke-width="9"/><circle cx="30" cy="30" r="8" fill="#f2c24a"/><rect x="25" y="52" width="10" height="100" rx="4" fill="#f2c24a"/><rect x="35" y="118" width="18" height="9" fill="#f2c24a"/><rect x="35" y="134" width="12" height="9" fill="#f2c24a"/></svg>
+    </div>
+    <div class="cast__edges"></div>
+    <div class="cast__warp"></div>
+  </div>
+
+  <!-- The whole ticket, put back together -->
+  <div class="whole" id="whole" hidden>
+    <div class="whole__ticket" id="wholeTicket"></div>
+    <p class="paper__hint whole__hint">Click to continue</p>
+  </div>
+
+  <!-- The objective, typed out while the music goes quiet -->
+  <div class="objective" id="objective" hidden>
+    <p class="objective__head">Objective</p>
+    <p id="obj1"></p>
+    <p id="obj2"></p>
+    <button class="plate plate--small objective__go" id="objGo" type="button"><span class="plate__text">Continue</span></button>
+  </div>
+
+  <!-- background music: a hint if the browser holds the sound back until a click -->
+  <p class="sound-hint" id="soundHint" hidden>Click anywhere for sound</p>
+
+  <script src="script.js?v=25"></script>
+</body>
+</html>
